@@ -1,0 +1,2 @@
+# Claves-transcriptomicas-del-envejecimiento
+Este repositorio contiene el código utilizado en el Trabajo Fin de Máster "Claves transcriptómicas del envejecimiento" del Máster en Biomedicina y Oncología Molecular de la Universidad de Oviedo. Concretamente en este trabajo se llevó a cabo un análisis de la expresión de los transposones, los niveles de histonas y la velociad de la elongación de la RNA polimerasa II en fibroblastos humanos senescentes, en diversos tejidos de ratones LAKI y en fibroblastos provenientes de pacientes del Sïndrome de Hutchinson-Gilford.
