@@ -1,0 +1,16 @@
+#!/bin/bash 
+source ~/miniforge3/etc/profile.d/conda.sh 
+conda activate TETranscripts
+myTEcount(){
+    bname=$(basename $1 | sed 's/_ZKRN.*//')
+    TEcount -b $1 \
+    --GTF /data/genomes/GRCh38_gencode/gencode.v44.primary_assembly.annotation.gtf \
+    --TE /data/genomes/GRCh38_gencode/GRCh38_GENCODE_rmsk_TE.gtf \
+    --stranded reverse \
+    --sortByPos \
+    --project $bname \
+    --outdir /home/antotartier/data/transposones/fibrob_senescentes/TEtranscripts/TEcount \
+    --verbose 2>/home/antotartier/data/transposones/fibrob_senescentes/TEtranscripts/TEcount/log_TE_${bname}.txt
+}
+export -f myTEcount
+parallel -j 4 myTEcount ::: /home/antotartier/data/fib_senescentes_data/STAR_aligns/*bam

@@ -1,0 +1,15 @@
+#!/bin/bash 
+source ~/miniforge3/etc/profile.d/conda.sh 
+conda activate TETranscripts
+myTEcount(){
+    bname=$(basename $1 | sed 's/_Aligned.out.bam//')
+    TEcount -b $1 \
+    --GTF /data/genomes/GRCm39_gencode/gencode.vM32.primary_assembly.annotation.gtf \
+    --TE /data/genomes/GRCm39_gencode/GRCm39_GENCODE_rmsk_TE.gtf \
+    --stranded reverse \
+    --project $bname \
+    --outdir /home/antotartier/data/transposones/LAKI/TEtranscripts/TE_count \
+    --verbose 2>/home/antotartier/data/transposones/LAKI/TEtranscripts/TE_count/log_TE_${bname}.txt
+}
+export -f myTEcount
+parallel -j 10 myTEcount ::: /home/antotartier/data/20231017_RNASeq_LAKI/newSTAR_aligns/*_Aligned.out.bam
