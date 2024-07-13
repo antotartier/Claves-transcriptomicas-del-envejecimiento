@@ -52,13 +52,11 @@ Q<-ggplot(quality,aes(x=Muestras,y=Lecturas_totales))+
 png(file=paste0(out_path,"total_lectures.png"),width = 6000, height = 4000, res = 1100)
 Q
 dev.off()
-
 ggsave(paste0(out_path,"total_lectures.pdf"),Q)
 
 
 #generamos el dataset con todas las muestras juntas 
 DDS_dataset<-DESeqDataSetFromMatrix(countData,colData,design = ~sexo + genotipo)
-
 
 #separamos el data set en función del órgano y lo guardamos en una lista
 organs<-unique(DDS_dataset$Tissue)
@@ -114,7 +112,6 @@ PCA_TE_plot_sex<-wrap_plots(PCA_TE_sex) + plot_layout(guides = "collect") & them
 png(file=paste0(out_path,"PCA_TE_sex.png"),width = 8000, height = 8000, res = 1100)
 PCA_TE_plot_sex
 dev.off()
-
 ggsave(paste0(out_path,"PCA_TE_sex.pdf"),PCA_TE_plot_sex,height = 8,width = 8)
 
 
@@ -127,7 +124,6 @@ PCA_TE_plot_genotype<-wrap_plots(PCA_TE_genotype) + plot_layout(guides = "collec
 png(file=paste0(out_path,"PCA_TE_genotype.png"),width = 8000, height = 8000, res = 1100)
 PCA_TE_plot_genotype
 dev.off()
-
 ggsave(paste0(out_path,"PCA_TE_genotype.pdf"),PCA_TE_plot_genotype,height = 8,width = 8)
 
 #NOTA: observamos como la muestra 86 cuya calidad es claramente inferior es un outlier
@@ -311,7 +307,7 @@ codif_all<-lapply(res_all,get_codif)
 codif_M<-lapply(res_M,get_codif)
 codif_F<-lapply(res_F,get_codif)
 
-#imprimimos un pequeño resumen de los resultados (mirar si puedes hacer una tabla chula)
+#imprimimos un pequeño resumen de los resultados 
 for (i in 1:6){
   #both
   print(paste(names(codif_all[i]), "Coding genes both",sep = " "))
@@ -378,7 +374,6 @@ myVolcano<-function(data,biosig,sig,labsize,pointsize,topn,titlesize,legtextsize
 TE_all_df<-lapply(TE_all, as.data.frame)
 TE_all_df<-bind_rows(TE_all_df,.id = "tejido")
 Volc_all_plot<-myVolcano(TE_all_df,biosig=1,sig=0.05,labsize=1.5,pointsize=3,topn=0,titlesize = 15,legtextsize = 15)+facet_wrap(~tejido,scales = "free")
-
 ggsave(filename = paste0(out_path,"Volc_TE_all.pdf"),plot = Volc_all_plot,height = 9,width = 8.5)
 
 #machos
@@ -389,7 +384,6 @@ Volc_M_plot<-myVolcano(TE_M_df,biosig=1,sig=0.05,labsize=1.5,pointsize=3,topn=0,
 png(file=paste0(out_path,"Volc_TE_male.png"),width = 12000, height = 8000, res = 1100)
 Volc_M_plot
 dev.off()
-
 ggsave(paste0(out_path,"Volc_TE_male.pdf"),Volc_M_plot,height = 7,width = 8)
 
 
@@ -401,7 +395,6 @@ Volc_F_plot<-myVolcano(TE_F_df,biosig=1,sig=0.05,labsize=1.5,pointsize=3,topn=0,
 png(file=paste0(out_path,"Volc_TE_female.png"),width = 12000, height = 8000, res = 1100)
 Volc_F_plot
 dev.off()
-
 ggsave(paste0(out_path,"Volc_TE_female.pdf"),Volc_F_plot,height = 7,width = 8)
 
 #--------------------------------------------------------------------------------------------------------------------

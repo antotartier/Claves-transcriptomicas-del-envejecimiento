@@ -29,7 +29,7 @@ star.jun <- star.jun[N == length(star.files)]
 # Convert to GRanges
 star.jun <- makeGRangesFromDataFrame(star.jun,keep.extra.columns = T,seqinfo = seqin)
 
-# Load gencode junctions
+# Load gencode junctions, they were previously generated in the senescent fibroblasts script
 known.jun <- readRDS('/home/antotartier/data/velocidad_transcrip/fibrob_senescentes/rec.anot_res/gencode.v44.introns.rds')
 
 # Extract STAR junctions that are equal or within the predicted introns
@@ -42,20 +42,3 @@ sel_in <- disjoin(c(dif,eq_se,eq_s,eq_e))
 sel_in <- sel_in[width(sel_in) >= 1000]
 # Export the introns
 rtracklayer::export.bed(sel_in,'/home/antotartier/data/velocidad_transcrip/fib_HGPS/rec.anot_res/selected_introns_fib_HGPS.bed')
-
-
-
-
-
-#plot of the result for actin, use sel_in before filtering
-options(ucscChromosomeNames=FALSE)
-actb <- GRanges('chr7',IRanges(5592816,5606655))
-exns <- gtf[gtf$type == 'exon']
-exnsactb <- subsetByOverlaps(exns, actb)
-
-plotTracks(list(
-  AnnotationTrack(subsetByOverlaps(exnsactb, actb),name='exonsbytx',group=exnsactb$transcript_id),
-  AnnotationTrack(subsetByOverlaps(known.jun,actb,type = 'any'),name='known',fill='orange'),
-  AnnotationTrack(subsetByOverlaps(star.jun, actb),name='STAR junctions'),
-  AnnotationTrack(subsetByOverlaps(c(dif,eq_se,eq_s,eq_e), actb),name='Selected',fill='blue'),
-  AnnotationTrack(subsetByOverlaps(sel_in, actb),name='Disjoin',fill='darkred')))

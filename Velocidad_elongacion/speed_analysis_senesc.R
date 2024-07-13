@@ -115,8 +115,6 @@ sample_info_GM05565<-data.frame(sample=c("Tube_1", "Tube_2", "Tube_3", "Tube_4",
 
 sample_info_GM00038<-data.frame(sample=c("Tube_19", "Tube_20", "Tube_21", "Tube_22", "Tube_23", "Tube_24", "Tube_25" ,"Tube_26", "Tube_27"),passage=rep(c("Temprano","Medio","Tardío"),each=3))
 
-# sample_info<-data.frame(sample=c("SRR5927738", "SRR5927739", "SRR5927740", "SRR5927741"),
-#                         passage=rep(c("Temprano","Tardío"),each=2))
 
 #path de los resultados
 path_GM05565<-Sys.glob("/home/antotartier/data/velocidad_transcrip/fibrob_senescentes/speed_res/allin1/*GM05565_speed.tsv")

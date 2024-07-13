@@ -23,6 +23,7 @@ saveRDS(introns,paste0(outpath,'gencode.vM32.introns.rds'))
 sample_info<-fread("/home/antotartier/data/20231017_RNASeq_LAKI/Sample_info.tsv")
 sample_info<-sample_info %>% mutate(genotipo=str_extract(SampleID,"KO|WT"),
                             sexo=ifelse(grepl("M",SampleID),"M","H"))
+
 #eliminate ausent samples and FACE samples
 ausent <- c("Tube_39","Tube_56","Tube_57","Tube_66","Tube_87") #error while transfering data
 FACE <- c("Tube_115","Tube_116","Tube_117","Tube_118","Tube_119","Tube_120")
@@ -35,18 +36,16 @@ require(data.table)
 require(GenomicRanges)
 # Load the junctions into a data.frame
 star.files <- list.files('/home/antotartier/data/20231017_RNASeq_LAKI/newSTAR_aligns/',pattern='*SJ.out.tab',full.names=T)
+
 #eliminate the erroneous files and the FACE files
 star.files <- star.files[!grepl(paste(ausent,collapse = "|"),star.files)]
 star.files <- star.files[!grepl(paste(FACE,collapse = "|"),star.files)]
 
-#Here you can apply filters to select certain samples
-# star.files<-star.files[grepl(paste0(unlist(as.vector(sample_info[sample_info$Tissue=="Ileon",1])),"_",collapse = "|"),star.files)]
-# star.files<-star.files[grepl(paste0(unlist(as.vector(sample_info[sample_info$Tissue=="Kidney",1])),"_",collapse = "|"),star.files)]
-# star.files<-star.files[grepl(paste0(unlist(as.vector(sample_info[sample_info$Tissue=="Muscle",1])),"_",collapse = "|"),star.files)]
-# star.files<-star.files[grepl(paste0(unlist(as.vector(sample_info[sample_info$Tissue=="Liver",1])),"_",collapse = "|"),star.files)]
-# star.files<-star.files[grepl(paste0(unlist(as.vector(sample_info[sample_info$Tissue=="Colon",1])),"_",collapse = "|"),star.files)]
-star.files<-star.files[grepl(paste0(unlist(as.vector(sample_info[sample_info$Tissue=="Heart",1])),"_",collapse = "|"),star.files)]
 
+#create a function to apply to all tissues
+get_annot<-function(tissue){
+#filter for the SJ files of each tissue
+star.files<-star.files[grepl(paste0(unlist(as.vector(sample_info[sample_info$Tissue==tissue,1])),"_",collapse = "|"),star.files)]
 #reading the junctions
 star.jun <- lapply(star.files, fread)
 star.jun <- do.call('rbind',star.jun)
@@ -75,21 +74,9 @@ sel_in <- disjoin(c(dif,eq_se,eq_s,eq_e))
 # Filter out short introns
 sel_in <- sel_in[width(sel_in) >= 1000]
 # Export the introns
-rtracklayer::export.bed(sel_in,'/home/antotartier/data/velocidad_transcrip/LAKI/rec.anot_res/selected_introns_Heart.bed')
+rtracklayer::export.bed(sel_in,paste0('/home/antotartier/data/velocidad_transcrip/LAKI/rec.anot_res/selected_introns_',tissue,'.bed'))
+}
 
-
-
-
-
-#plot of the result for actin, use sel_in before filtering
-options(ucscChromosomeNames=FALSE)
-actb <- GRanges('chr7',IRanges(5592816,5606655))
-exns <- gtf[gtf$type == 'exon']
-exnsactb <- subsetByOverlaps(exns, actb)
-
-plotTracks(list(
-  AnnotationTrack(subsetByOverlaps(exnsactb, actb),name='exonsbytx',group=exnsactb$transcript_id),
-  AnnotationTrack(subsetByOverlaps(known.jun,actb,type = 'any'),name='known',fill='orange'),
-  AnnotationTrack(subsetByOverlaps(star.jun, actb),name='STAR junctions'),
-  AnnotationTrack(subsetByOverlaps(c(dif,eq_se,eq_s,eq_e), actb),name='Selected',fill='blue'),
-  AnnotationTrack(subsetByOverlaps(sel_in, actb),name='Disjoin',fill='darkred')))
+#execcute the function in all tissues
+tissue<-c("Ileon","Kidney","Muscle","Liver","Colon","Heart")
+lapply(tissue,get_annot)

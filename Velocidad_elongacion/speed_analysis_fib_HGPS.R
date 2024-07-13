@@ -27,8 +27,6 @@ res_fused[,velocidad:=-1/slope, by=in_coords]
 res_fused<-merge(res_fused,sample_info,by="sample")
 
 
-
-
 # hacemos un subset de aquellos en los que la muestra joven con mayor velocidad tiene una velocidad menos que la senescente con menor velocidad
 res_fused[,consist:=sum(max(velocidad[Genotipo=="WT"])<min(velocidad[Genotipo=="HGPS"])| max(velocidad[Genotipo=="HGPS"])<min(velocidad[Genotipo=="WT"])),by=in_coords]
 res_consist<-res_fused[consist==1]
@@ -122,8 +120,6 @@ LFC_plot<-ggplot(Wilc_res_noZ,aes(x=group, y=media, fill=group))+
   geom_errorbar(aes(x=group, ymin=minus, ymax=plus), width=0.2, colour="black", alpha=0.9, size=0.5,position = position_dodge(width = 0.9))+
   scale_fill_manual(values=c("Intrones consistentes"="#FFB347", "Todos los intrones"="#AEC6CF"))
   
-
-
 
 #Guardamos los resultados
 png(filename = "/home/antotartier/data/velocidad_transcrip/fib_HGPS/speed_res/plots_fib_HGPS.png",height =6000 , width =18000 ,res =1100 )

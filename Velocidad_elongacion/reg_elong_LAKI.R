@@ -3,7 +3,7 @@ library(DESeq2)
 library(ggplot2)
 library(fgsea)
 
-#definimos las variables
+#definimos el out_path
 out_path<-"/home/antotartier/data/velocidad_transcrip/LAKI/regulators/"
 
 #hacemos el GSEA en los datos de LAKI
@@ -30,12 +30,19 @@ reg_neg_pol2<-merge(reg_neg_pol2,gtf_mm,by="GENE_SYMBOLS")
 
 #hacemos el gene term to gene
 term2gene<-list(Positivos=reg_pos$gene_id,Negativos=reg_neg$gene_id,Positivos_Pol2=reg_pos_pol2$gene_id,Negativos_Pol2=reg_neg_pol2$gene_id)
-for(name in names(term2gene)){
-  y<-gsub("\\.[0-9]+$","",term2gene[[name]])
-  term2gene[[name]]<-y
-}
 
 #hacmeos los rank
+get_rank<-function(x){
+  res_gsea<-as.data.frame(x)
+  res_gsea<-res_gsea[res_gsea$baseMean>10,]#eliminamos genes con pocas lecturas
+  res_gsea<-mutate(res_gsea,rank= -log10(pvalue+min(res_gsea$pvalue[res_gsea$pvalue!=0], na.rm= T))*sign(log2FoldChange))
+  res_gsea<-na.omit(res_gsea)#eliminamos na y duplicados
+  res_gsea<-distinct(res_gsea)
+  res_gsea_vector<-res_gsea$rank
+  names(res_gsea_vector)<-row.names(res_gsea)
+  res_gsea_vector<-sort(res_gsea_vector, decreasing = T)
+  return(res_gsea_vector)
+}
 rank_list<-lapply(res_all,get_rank)
 
 #hacemos el GSEA, no sale nada significativo
@@ -75,7 +82,7 @@ for(name in names(GSEA_F)){
 }
 
 #----------------------------------------------------------------------------------------------------------------------
-#Miramos que reguladores están alterados de forma estad´siticamente significativa
+#Miramos que reguladores están alterados de forma estadísticamente significativa
 
 #cargamos el resultado conjunto de machos y hembras
 load("/home/antotartier/data/transposones/LAKI/resultados_anlaisis/res_all.obj")
@@ -152,48 +159,6 @@ for(name in names(reg_neg_pol2_res_df)){
   reg_neg_pol2_res_df[[name]]<-x
 }
 reg_neg_pol2_res_df<-bind_rows(reg_neg_pol2_res_df,.id = "órgano")
-
-
-#representamos los resultados
-Plot_pos<-ggplot(reg_pos_res_df,aes(x=baseMean,y=log2FoldChange))+
-  geom_point()+
-  geom_label_repel(aes(label=rownames(reg_pos_res_df)))+
-  geom_hline(yintercept = 0,color="blue")+
-  facet_wrap(~órgano)
-
-Plot_pos_pol2<-ggplot(reg_pos_pol2_res_df,aes(x=baseMean,y=log2FoldChange))+
-  geom_point()+
-  geom_label_repel(aes(label=rownames(reg_pos_pol2_res_df)))+
-  geom_hline(yintercept = 0,color="blue")+
-  facet_wrap(~órgano)
-
-Plot_neg<-ggplot(reg_neg_res_df,aes(x=baseMean,y=log2FoldChange))+
-  geom_point()+
-  geom_label_repel(aes(label=rownames(reg_neg_res_df)))+
-  geom_hline(yintercept = 0,color="blue")+
-  facet_wrap(~órgano)
-
-Plot_neg_pol2<-ggplot(reg_neg_pol2_res_df,aes(x=baseMean,y=log2FoldChange))+
-  geom_point()+
-  geom_label_repel(aes(label=rownames(reg_neg_pol2_res_df)))+
-  geom_hline(yintercept = 0,color="blue")+
-  facet_wrap(~órgano)
-
-png(file=paste0(out_path,"MA_plot_pos.png"),width = 8000, height = 8000, res = 1100)
-Plot_pos
-dev.off()
-
-png(file=paste0(out_path,"MA_plot_pos_pol2.png"),width = 8000, height = 8000, res = 1100)
-Plot_pos_pol2
-dev.off()
-
-png(file=paste0(out_path,"MA_plot_neg.png"),width = 8000, height = 8000, res = 1100)
-Plot_neg
-dev.off()
-
-png(file=paste0(out_path,"MA_plot_neg_pol2.png"),width = 8000, height = 8000, res = 1100)
-Plot_neg_pol2
-dev.off()
 
 #guardamos los datos en excel
 res<-list(Positivos=reg_pos_res_df,Positivos_pol2=reg_pos_pol2_res_df,Negativos=reg_neg_res_df,Negativos_pol2=reg_neg_pol2_res_df)

@@ -27,9 +27,9 @@ require(GenomicRanges)
 # Load the junctions into a data.frame
 star.files <- list.files('/home/antotartier/data/fib_senescentes_data/STAR_aligns/',pattern='*SJ.out.tab',full.names=T)
 
-#aplaying filters to select the samples
+#aplaying filters to select the samples from the GM00038 cell line
 star.files<-star.files[grepl("Tube_[0-9]{2}_",star.files)]
-#for the GM05565 we did star.files<-star.files[grepl("Tube_[0-9]{1}_",star.files)]
+#star.files<-star.files[grepl("Tube_[0-9]{1}_",star.files)] #this would be executed instead for the GM05565 cell line
 
 star.jun <- lapply(star.files, fread)
 star.jun <- do.call('rbind',star.jun)
@@ -63,7 +63,7 @@ rtracklayer::export.bed(sel_in,'/home/antotartier/data/velocidad_transcrip/fibro
 
 
 
-
+#this is just an example to facilitate the comprehension of the code
 #plot of the result for actin, use sel_in before filtering
 library(Gviz)
 options(ucscChromosomeNames=FALSE)

@@ -22,31 +22,7 @@ sample_info<-sample_info %>% mutate(genotipo=str_extract(SampleID,"KO|WT"),
 #cambiamos el nombre del tejido a español
 sample_info$Tissue<-stri_replace_all_regex(sample_info$Tissue, pattern = c("Ileon","Kidney","Muscle","Liver","Colon"  ,"Heart"),replacement=c("Íleon","Riñón","Músculo","Hígado","Colon","Corazón"),vectorize_all = F)
 
-#obtenemos los count normalizaddos
-DDS_exp_all<-DESeq(DDS_dataset)
-vsd_all<-vst(DDS_exp_all)
-cts_all<-assay(vsd_all)
-
-#eliminamos la version del ensenmble ID
-rownames(cts_all)<-gsub("\\.[0-9]+$","",rownames(cts_all))
-
-#obtenemos los counts de los transposones y de las histonas
-cts_TE<-cts_all[grepl(":",rownames(cts_all)),]
-cts_hist<-cts_all[rownames(cts_all) %in% gene_set$Ensembl_Accession_ID,]
-
-#calculamos los counts medios por muestra
-cts_mean<-data.frame(TE_mean=colMeans(cts_TE),Hist_mean=colMeans(cts_hist),sexo=sample_info$sexo,genotipo=sample_info$genotipo,tejido=sample_info$Tissue,row.names = colnames(cts_TE))
-
-#hacemos el scatter plot para ver si existe correlación entre los counts de histonas y los de transposones
-correl<-ggplot(cts_mean,aes(x=TE_mean,y=Hist_mean))+
-  geom_point(aes(color=genotipo))+
-  geom_smooth(method = lm,)+
-  stat_poly_eq(size=3)+
-  labs(x="Lecturas normalizadas de transposones",y="Lecturas normalizadas de histonas")+
-  facet_wrap(~tejido)
-  
-#---------------------------------------------------------------------------------------------------------------------
-#hacemos lo mismo pero solo con los genes con lecturas consistentes (nZ)
+#filtramos los genes con un 10 lecturas o mas en al menos un numero de muestras igual al grupo de análisis de menor tamaño 
 smallestGroupSize <- min(c(sum(DDS_dataset$genotipo=="KO"),sum(DDS_dataset$genotipo=="WT")))
 DDS_dataset_nZ<-DDS_dataset[rowSums(counts(DDS_dataset) >= 10) >= smallestGroupSize,]
 

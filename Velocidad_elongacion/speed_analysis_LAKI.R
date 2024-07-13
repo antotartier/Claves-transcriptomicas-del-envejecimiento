@@ -6,7 +6,7 @@ library(data.table)
 library(tidyverse)
 library(stringi)
 
-#cargamos el sample info y eliminamos las muestra ausente, las de FACE y el outlier
+#cargamos el sample info y eliminamos las muestras ausentes, las de FACE y el outlier
 sample_info<-fread("/home/antotartier/data/20231017_RNASeq_LAKI/Sample_info.tsv")
 elim<-c("Tube_39","Tube_56","Tube_57","Tube_66","Tube_86","Tube_87","Tube_115","Tube_116","Tube_117","Tube_118","Tube_119","Tube_120")
 sample_info<-sample_info[!grepl(paste0(elim,collapse = "|"),SampleName),]
@@ -19,7 +19,6 @@ sample_info<-sample_info %>% mutate(genotipo=str_extract(SampleID,"KO|WT"),
 res_speed<-function(path,sample_info,sex="ALL"){
 #lista para guardar los dos resultados
 results<-list()
-
 #unimos los resultados 
 path_res<-Sys.glob(path)
 tis<-gsub("\\*","",gsub("_speed.tsv","",basename(path)))
