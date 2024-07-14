@@ -1,9 +1,13 @@
-#hacemos el heatmap
+#cargamos las librerías necesarias
 library(openxlsx)
 library(dplyr)
 
 #definimos el out path
 out_path<-"/home/antotartier/data/histones/fib_HGPS/"
+
+#-------------------------------------------------------------------------------
+
+#HEATMAP DE LAS HISTONAS
 
 #cargamos el vsd de DESeq y los id de las histonas y los nombres
 load("/home/antotartier/data/transposones/fib_HGPS/results/TE_count/vsd_HGPS.obj")
@@ -33,8 +37,9 @@ heatmap(counts_hist,
         cexCol = 1)           # Column text size
 dev.off()
 
-#-----------------------------------------------------------------------------------------------------------------------------------------
-#hacemos el GSEA
+#-------------------------------------------------------------------------------
+
+#GSEA DE LAS HISTONAS
 
 #cargamos el resultado de DESEq
 load("/home/antotartier/data/transposones/fib_HGPS/results/TE_count/res_fib_HGPS.obj")

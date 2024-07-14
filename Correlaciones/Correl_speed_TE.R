@@ -1,7 +1,8 @@
 library(ggplot2)
 library(ggpmisc)
 
-#cargamos los resultados conjuntos, los de machos y los de hemrbas; y los de la velocidad
+
+#cargamos los resultados conjuntos, los de machos y los de hemrbas; y los de la velocidad (generados en el script "speed_analysis_LAKI.R")
 load("/home/antotartier/data/transposones/LAKI/resultados_anlaisis/res_all.obj")
 load("/home/antotartier/data/transposones/LAKI/resultados_anlaisis/res_M.obj")
 load("/home/antotartier/data/transposones/LAKI/resultados_anlaisis/res_F.obj")
@@ -46,6 +47,8 @@ correl_M<-merge(LFC_tissue_M,LFC_TE_M,by="tejido")
 correl_F<-merge(LFC_tissue_H,LFC_TE_F,by="tejido")
 
 #representamos los datos
+
+#todos
 plot_correl<-ggplot(correl, aes(x = LFC_TE, y = media)) +
   geom_point(aes(color = tejido)) +
   geom_smooth(method = "lm") +
@@ -59,6 +62,7 @@ plot_correl<-ggplot(correl, aes(x = LFC_TE, y = media)) +
   ggtitle("Correlación expresión de los transposones y velocidad de la elongación LAKI") +
   theme(plot.title = element_text(hjust = 0.5))
 
+#machos
 plot_correl_M<-ggplot(correl_M,aes(x=LFC_TE,y=media))+
   geom_point(aes(color=tejido))+
   geom_smooth(method = lm,)+
@@ -73,6 +77,7 @@ plot_correl_M<-ggplot(correl_M,aes(x=LFC_TE,y=media))+
   velocidad de la elongación LAKI machos")+
   theme(plot.title = element_text(hjust = 0.5))
 
+#hembras
 plot_correl_F<-ggplot(correl_F,aes(x=LFC_TE,y=media))+
   geom_point(aes(color=tejido))+
   geom_smooth(method = lm,)+

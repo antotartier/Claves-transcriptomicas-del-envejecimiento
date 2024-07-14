@@ -2,7 +2,7 @@
 library(ggplot2)
 library(ggpmisc)
 
-#cargamos los datos del cambio en la velocidad y el LFC medio de las histonas en los diferentes tejidos (generado al final del script "histone_LAKI.R")
+#cargamos los datos del cambio en la velocidad (generados en el script "speed_analysis_LAKI.R") y el LFC medio de las histonas en los diferentes tejidos (generado al final del script "histone_LAKI.R")
 load("/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_all.obj")
 load("/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_machos.obj")
 load("/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_hembras.obj")
@@ -21,6 +21,8 @@ correl_M<-merge(LFC_tissue_M,LFC_hist_M,by="tejido")
 correl_H<-merge(LFC_tissue_H,LFC_hist_H,by="tejido")
 
 #representamos los datos
+
+#todos
 plot_correl<-ggplot(correl,aes(x=LFC,y=media))+
   geom_point(aes(color=tejido))+
   geom_smooth(method = lm,)+
@@ -35,6 +37,7 @@ plot_correl<-ggplot(correl,aes(x=LFC,y=media))+
   velocidad de la elongación LAKI")+
   theme(plot.title = element_text(hjust = 0.5))
 
+#machos
 plot_correl_M<-ggplot(correl_M,aes(x=LFC,y=media))+
   geom_point(aes(color=tejido))+
   geom_smooth(method = lm,)+
@@ -49,6 +52,7 @@ plot_correl_M<-ggplot(correl_M,aes(x=LFC,y=media))+
   velocidad de la elongación LAKI machos")+
   theme(plot.title = element_text(hjust = 0.5))
 
+#hembras
 plot_correl_H<-ggplot(correl_H,aes(x=LFC,y=media))+
   geom_point(aes(color=tejido))+
   geom_smooth(method = lm,)+

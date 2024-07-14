@@ -20,17 +20,18 @@ saveRDS(introns,'/home/antotartier/data/velocidad_transcrip/fibrob_senescentes/r
 
 # Load the sample info
 sample_info<-read.xlsx("/home/antotartier/data/transposones/fibrob_senescentes/TEtranscripts/DESeq_fib_senescentes/sample_info.xlsx")
-
+sample_info<-sample_info[c(1:9,19:27),]
 
 require(data.table)
 require(GenomicRanges)
 # Load the junctions into a data.frame
 star.files <- list.files('/home/antotartier/data/fib_senescentes_data/STAR_aligns/',pattern='*SJ.out.tab',full.names=T)
 
-#aplaying filters to select the samples from the GM00038 cell line
-star.files<-star.files[grepl("Tube_[0-9]{2}_",star.files)]
-#star.files<-star.files[grepl("Tube_[0-9]{1}_",star.files)] #this would be executed instead for the GM05565 cell line
-
+#create a function to apply to each cell line
+get_annot<-function(cell_line){
+#aplaying filters to select the samples from an specific cell line
+star.files<-star.files[grepl(paste0("_",unlist(as.vector(sample_info[sample_info$Cells==cell_line,1])),"_",collapse = "|"),star.files)]
+#reading files
 star.jun <- lapply(star.files, fread)
 star.jun <- do.call('rbind',star.jun)
 # Filter by number of uniquely mapped reads (V7) and overhang length (V9)
@@ -58,10 +59,12 @@ sel_in <- disjoin(c(dif,eq_se,eq_s,eq_e))
 # Filter out short introns
 sel_in <- sel_in[width(sel_in) >= 1000]
 # Export the introns
-rtracklayer::export.bed(sel_in,'/home/antotartier/data/velocidad_transcrip/fibrob_senescentes/rec.anot_res/selected_introns_GM00038.bed')
+rtracklayer::export.bed(sel_in,paste0('/home/antotartier/data/velocidad_transcrip/fibrob_senescentes/rec.anot_res/selected_introns_',cell_line,'.bed'))
+}
 
-
-
+#getting annotation
+get_annot("GM05565")
+get_annot("GM00038")
 
 #this is just an example to facilitate the comprehension of the code
 #plot of the result for actin, use sel_in before filtering

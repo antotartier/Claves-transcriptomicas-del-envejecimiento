@@ -281,7 +281,7 @@ ggsave("/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_hembras.pd
 
 
 #----------------------------------------------------------------------------------------------------------
-#guardamos los resultados
+#guardamos los resultados que serán utilizados en los estudios de correlación
 save(LFC_tissue,file = "/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_all.obj")
 save(LFC_tissue_H,file = "/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_hembras.obj")
 save(LFC_tissue_M,file = "/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_machos.obj")
