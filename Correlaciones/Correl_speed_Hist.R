@@ -1,6 +1,8 @@
+#cargamos las librerías necesarias
 library(ggplot2)
 library(ggpmisc)
 
+#cargamos los datos del cambio en la velocidad y el LFC medio de las histonas en los diferentes tejidos (generado al final del script "histone_LAKI.R")
 load("/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_all.obj")
 load("/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_machos.obj")
 load("/home/antotartier/data/velocidad_transcrip/LAKI/speed_res/LFC_hembras.obj")
